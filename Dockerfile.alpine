@@ -58,6 +58,13 @@ RUN apk --update add \
     && ssh-keyscan $SSH_KNOWN_HOSTS | tee /etc/ssh/ssh_known_hosts \
     && echo 'Done'
 
+
+ADD https://storage.googleapis.com/kubernetes-release/release/v1.7.11/bin/linux/amd64/kubectl /usr/local/bin/kubectl
+RUN chmod +x /usr/local/bin/kubectl \
+    && kubectl config set-cluster dcos-k8s --server=http://apiserver-insecure.kubernetes.l4lb.thisdcos.directory:9000 \
+    && kubectl config set-context dcos-k8s --cluster=dcos-k8s --namespace=default \
+    && kubectl config use-context dcos-k8s
+
 COPY wrapper.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/wrapper.sh
 
